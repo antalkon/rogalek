@@ -1,0 +1,375 @@
+<body></body>
+<script>
+var canvas = document.createElement("canvas");
+document.body.style="display:flex; justify-content: center;";
+var cxt = canvas.getContext("2d");
+document.body.appendChild(canvas);
+const width = canvas.width = 480;
+const height = canvas.height = 480;
+
+hero = new Image();
+hero.src = "heroesheet.png";
+
+map = new Image();
+map.src = "ostrov.jpg";
+
+chest = new Image();
+chest.src="chest.png";
+
+trash = new Image();
+trash.src="trash.png";
+
+tree = new Image();
+tree.src="tree.png";
+
+pils = new Image();
+pils.src="pils.psng";
+
+
+circle = new Image();
+circle.src="circle.png";
+
+
+class item{
+   constructor(pic, x, y){
+      this.img = pic;
+      this.posx = x;
+      this.posy = y;
+   }
+   draw(){
+      cxt.drawImage(this.img, mx-this.posx, my-this.posy, 40,40)
+   }
+}
+
+ch1 = new item(chest, 100,100)
+ch2 = new item(chest, 200,60)
+ch3 = new item(chest, 400,20)
+
+tr1 = new item(trash, 450, 220)
+tr2 = new item(trash, 350, 70)
+tr3 = new item(trash, 170, 270)
+tr4 = new item(trash, 200, 270)
+tr5 = new item(trash, 10, 100)
+tr6 = new item(trash, 110, 170)
+tr7 = new item(trash, 50, 90)
+
+te1 = new item(tree, 20, 155)
+te2 = new item(tree, 170, 55)
+te3 = new item(tree, 220, 175)
+
+pl = new item(pils, 120, 305)
+
+ci = new item(circle, 150, 350)
+ 
+
+var loot = [ch1, ch2, ch3]
+let loot2 = [tr1, tr2, tr3, tr4, tr5, tr6, tr7 ]
+let loot3 = [te1, te2, te3]
+let loot4 = [pl]
+let loot5 = [ci]
+
+const sprwidth = 95;
+const sprheight = 105;
+let Kadr = 0
+let AnimLine = 5 
+
+let playframe = 0; //счётчик кадров
+const slowframe = 5; //замедлитель
+
+var mx = 100
+var my = 200
+
+let   xp = 100
+
+let hun = 10
+
+
+document.addEventListener('keydown', ({keyCode})=>{
+
+switch (keyCode){
+case 65: 
+AnimLine = 5; 
+mx += 5; 
+console.log("left", mx)
+break;
+
+case 68: 
+AnimLine = 7; 
+mx -= 5; 
+console.log("right", mx)
+break;
+
+case 83: 
+AnimLine = 4; 
+my -= 5; 
+console.log("davn :3",my)
+break;
+
+case 87: 
+AnimLine = 6; 
+my += 5; 
+console.log("yup:3",my)
+break;
+}})
+
+let gold = 0
+let full = " "
+let lootel = ""
+
+let pila = 0;
+let pilab = false
+let key = 0;
+let keyb = false
+
+let trees = 0
+let treesb = false
+
+
+class monster{
+   constructor(pic, x, y){
+      this.img = pic;
+      this.posx = x;
+      this.posy = y;
+   
+   }
+}
+trog = new Image()
+trog.src="mstr.png"
+tuga = new monster(trog, 200, 200)
+function draw(){
+   cxt.drawImage(this.img, mx-this.posx, my-this.posy, 40,40)
+}
+function movie(){
+   if(this.posx + 235 > mx){this.posx -= 0.5}
+   if(this.posx + 234 < mx){this.posx += 0.5}
+   if(this.posy + 234 < my){this.posy += 0.5}
+   if(this.posy + 234 > my){this.posy -= 0.5}
+
+
+}
+
+function animate(){
+   cxt.clearRect(0,0,width,height); 
+   cxt.drawImage(map, mx-800,my-800,width+800,height+800 )
+   cxt.drawImage(hero, Kadr*sprwidth, AnimLine*sprheight, sprwidth, sprheight, width/2, height/2,50,50);
+   loot.forEach(elem => elem.draw())
+   loot2.forEach(elem => elem.draw())
+   loot3.forEach(elem => elem.draw())
+   loot5.forEach(elem => elem.draw())
+
+   cxt.fillStyle = "#00F"
+   cxt.strokeStyle = "#F00"
+   cxt.font = "italic 30pt Arial"
+   cxt.fillText(`Собрано: ${gold}`, 20, 50)
+   cxt.fillText(`HP: ${xp}`, 320, 50)
+   cxt.fillText(`ГОЛОД: ${hun}`, 270, 470)
+
+   cxt.font = 'bold 30px sans-serif'
+   cxt.strokeText(full, 100, 200)
+
+   cxt.strokeText(lootel, 100, 200)
+
+
+   if (pilab === true && pila >= 1){
+      cxt.strokeText(`Пила: ${pila}`, 30, 110)
+
+   }
+   if (keyb === true && key >= 1){
+      cxt.strokeText(`Ключей: ${key}`, 40, 130)
+
+   }
+   if (treesb === true && trees >= 1){
+      cxt.strokeText(`Деревьев: ${trees}`, 60, 150)
+
+   }
+
+   if (gold >= 3){
+      full = "Собраны все сундуки"
+      setTimeout(() => {
+         location.href = '/GameOwer.html'
+      }, 3000);
+
+   }
+   if (xp <= 0){
+      console.log("reload!")
+      lootel = "Вы скончались"            
+
+      setTimeout(() => {
+         location.reload()
+
+      }, 5000);
+
+      
+   }
+   if (hun <= 0){
+      console.log("reload!")
+      lootel = "Вы скончались"            
+
+      setTimeout(() => {
+         location.reload()
+
+      }, 5000);
+
+      
+   }
+   if (playframe % slowframe == 0)
+   {if (Kadr < 10)
+   Kadr++;
+   else Kadr = 0;}
+   playframe++;
+   loot.forEach(elem => collide(elem))
+   loot2.forEach(elem => collide2(elem))
+   loot3.forEach(elem => collide3(elem))
+
+   loot5.forEach(elem => collide5(elem))
+
+
+   requestAnimationFrame(animate); // перезапуск функции изнутри
+}
+function collide(item){
+   
+      if((item.posx + 235<mx) & (item.posx +265 > mx) & (item.posy + 235 < my) & (item.posy +265 > my)){
+         if(key >= 1) {
+            console.log('catch!')
+            item.posx+=15000
+            gold += 1
+            key -= 1
+         } else{
+            lootel = `Нет ключей`
+         
+            setTimeout(() => {
+               lootel = " "
+            }, 1000);
+
+   } 
+
+}
+}
+function collide5(item){
+   
+   if((item.posx + 235<mx) & (item.posx +265 > mx) & (item.posy + 235 < my) & (item.posy +265 > my)){
+      if(trees >= 1) {
+         console.log('catch!')
+         item.posx+=15000
+         
+         lootel = `Ты ражег костер`
+         xp = 100
+         setTimeout(() => {
+            item.posx-=15000
+         }, 3000);
+         trash -= 1
+
+      } else{
+         lootel = `Нет ключей`
+      
+         setTimeout(() => {
+            lootel = " "
+         }, 1000);
+
+} 
+
+}
+}
+function collide3(item){
+   
+   if((item.posx + 235<mx) & (item.posx +265 > mx) & (item.posy + 235 < my) & (item.posy +265 > my)){
+      if(pila >= 1) {
+         console.log('catch!')
+         item.posx+=15000
+         pila -= 1
+         trees += 1
+         treesb = true     
+      } else{
+         lootel = `Нет пилы`
+      
+         setTimeout(() => {
+            lootel = " "
+         }, 1000);
+
+} 
+
+}
+}
+
+function collide2(item){
+   if((item.posx + 235<mx) & (item.posx +265 > mx) & (item.posy + 235 < my) & (item.posy +265 > my)){
+      console.log('catch2!')
+      item.posx+=15000
+      // gold += 1
+      lootdraw()
+      setTimeout(() => {
+         item.posx-=15000
+      }, 10000);
+
+   }
+
+}
+const interval = setInterval(() => {
+  console.log(xp);
+  xp--;
+  if (xp < 0) {
+    clearInterval(interval);
+  }
+}, 500);
+const interval2 = setInterval(() => {
+  console.log(hun);
+  hun--;
+  if (hun < 0) {
+    clearInterval(interval);
+  }
+}, 4500);
+function lootdraw(){
+   let random = Math.floor(Math.random() * 3);
+   if(random === 0){
+      lootel = `ты достал из мусора: еда`
+      hun = 10
+      setTimeout(() => {
+         lootel = " "
+      }, 1000);
+      
+      
+
+
+   }
+   if(random === 1){
+      lootel = `ты достал из мусора: key`
+      keyb = true
+      key += 1
+      setTimeout(() => {
+         lootel = " "
+      }, 1000);
+      
+
+      
+
+   }
+   if(random === 2){
+      lootel = `ты достал из мусора: пила`
+      pilab = true
+      pila += 1
+      setTimeout(() => {
+         lootel = " "
+      }, 1000);
+      
+
+
+   }
+   if(random === 3){
+      lootel = `ты достал из мусора: key`
+      keyb = true
+      key += 1
+      setTimeout(() => {
+         lootel = " "
+      }, 1000);
+      
+
+   }
+}
+
+animate() //запуск функции снаружи
+
+
+
+
+
+</script>
